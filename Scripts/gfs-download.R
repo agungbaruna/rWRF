@@ -1,6 +1,6 @@
 #' This script is used for downloading Global Forecast System data at AWS Open Data
 #' https://noaa-gfs-bdp-pds.s3.amazonaws.com
-#' These data were available from 26 Februari 2021 until present
+#' These data were available from 26 February 2021 until present
 #' If you want more historical data, You can visit https://rda.ucar.edu
 
 require(glue, quietly = T)
