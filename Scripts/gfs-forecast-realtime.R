@@ -1,11 +1,15 @@
-#' This script is used for downloading Global Forecast System data at AWS Open Data
-#' https://noaa-gfs-bdp-pds.s3.amazonaws.com
-#' These data were available from 26 February 2021 until present
+#' This script is used for downloading Global Forecast System data at NOAA server at
+#' https://nomads.ncep.noaa.gov
 #' If you want more varies data, You can visit https://rda.ucar.edu with other data sources
+#' https://nomads.ncep.noaa.gov/cgi-bin/filter_gfs_0p25.pl?file=gfs.t00z.pgrb2.0p25.anl&subregion=&leftlon=90&rightlon=150&toplat=12&bottomlat=-11&dir=%2Fgfs.20210822%2F00%2Fatmos
 #' @param date_str start time 
 #' @param date_end end time
 #' @param interval interval hour between start and end time
 #' @param issued_time initial hour forecast (00, 06, 12, or 18)
+#' @param toplat 
+#' @param bottomlat
+#' @param leftlon
+#' @param rightlon 
 #' \dontrun{
 #' # for testing
 #' date_str = "2021-03-02 00:00:00"
@@ -18,10 +22,10 @@
 #' interval    <- Sys.getenv("INTERVAL")
 #' issued_time <- Sys.getenv("ISSUED_TIME")
 #'  
-#' gfs_forecast_download(date_str, date_end, resolution, interval, issued_time)
+#' gfs_forecast_gribfilter(date_str, date_end, resolution, interval, issued_time, bottomlat, toplat, leftlon, rightlon)
 #' }
 #' @export
-gfs_forecast_download <- function(date_str, date_end, res, interval, issued_time) {
+gfs_forecast_gribfilter <- function(date_str, date_end, res, interval, issued_time, bottomlat, toplat, leftlon, rightlon) {
   # export library
   library(glue, quietly = T)
   library(curl, quietly = T)
@@ -57,6 +61,7 @@ gfs_forecast_download <- function(date_str, date_end, res, interval, issued_time
   if (date_end < date_str) {stop("END_DATE must be larger than START_DATE!")}
   
   # check time at start date, must be same as ISSUED_TIME 
+  
   if (HH1 != issued_time) {
     stop(cat(red("hour at START_DATE must be same as ISSUED_TIME! (e.g. 2021-01-01 12:00:00; ISSUED_TIME=12)", "\n")))}
   
@@ -101,29 +106,25 @@ gfs_forecast_download <- function(date_str, date_end, res, interval, issued_time
              Your download directory: {curdir}/{yy1}{mm1}{dd1}/{HH1}"))
   
   # download file
-  # there are some changing with the destination folder before 23 March 2021
-  url_ <- "https://noaa-gfs-bdp-pds.s3.amazonaws.com/"
-  if (as.Date(date_str) <= as.Date("2021-03-22")){
-    # without atmos folder
-    for (frc in frc_range) {
-      curl_download(glue("{url_}gfs.{yy1}{mm1}{dd1}/{issued_time}/gfs.t{issued_time}z.pgrb2.{res}.f{frc}"), 
-                    glue("{curdir}/{yy1}{mm1}{dd1}/{HH1}/gfs.t{issued_time}z.{yy1}{mm1}{dd1}.pgrb2.{res}.f{frc}"),
-                    quiet = FALSE)
+  url_ <- "https://nomads.ncep.noaa.gov/cgi-bin/"
+  # Choose perl script for filtering grib data
+  perl <- glue("filter_gfs_{res}.pl")
+  # Download progress
+  for (frc in frc_range) {
+    curl_download(
+      # web source
+      glue("{url_}{perl}?file=gfs.t{issued_time}z.pgrb2.{res}.f{frc}&subregion=&leftlon={leftlon}&rightlon={rightlon}&toplat={toplat}&bottomlat={bottomlat}&dir=%2Fgfs.{yy1}{mm1}{dd1}%2F{issued_time}%2Fatmos"), 
+      # output name
+      glue("{curdir}/{yy1}{mm1}{dd1}/{HH1}/gfs.t{issued_time}z.{yy1}{mm1}{dd1}.pgrb2.{res}.f{frc}"),
+      # additional options
+      quiet = FALSE)
     }
-    # with atmos folder
-  } else {
-    for (frc in frc_range) {
-      curl_download(glue("{url_}gfs.{yy1}{mm1}{dd1}/{issued_time}/atmos/gfs.t{issued_time}z.pgrb2.{res}.f{frc}"), 
-                    glue("{curdir}/{yy1}{mm1}{dd1}/{HH1}/gfs.t{issued_time}z.{yy1}{mm1}{dd1}.pgrb2.{res}.f{frc}"),
-                    quiet = FALSE)
-    }  
-  }
 }
 
-# date_str    <- Sys.getenv("START_TIME")
-# date_end    <- Sys.getenv("END_TIME")
-# resolution  <- Sys.getenv("RES")
-# interval    <- Sys.getenv("INTERVAL")
-# issued_time <- Sys.getenv("ISSUED_TIME") 
-# 
-# gfs_forecast_download(date_str, date_end, resolution, interval, issued_time)
+date_str    <- "2021-08-23 00:00:00"
+date_end    <- "2021-08-26 00:00:00"
+resolution  <- "1p00"
+interval    <- 6
+issued_time <- 0
+
+gfs_forecast_gribfilter(date_str, date_end, resolution, interval, issued_time, bottomlat = -11, toplat = 11, leftlon = 95, rightlon = 150)
