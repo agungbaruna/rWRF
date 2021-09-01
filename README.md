@@ -10,19 +10,26 @@ This script was tested on Windows Subsystem Linux with Ubuntu Distro
 
 If You have downloaded the data (e.g. GFS, ERA5, etc), follow these steps
 
-1.  Open R with your bash terminal
+1.  Clone this repository, then open **rWRF** folder
+
+    ```{bash}
+    git clone https://github.com/agungbaruna/rWRF.git
+    cd rWRF
+    ```
+
+2.  Open R with your bash terminal
 
     ```{bash}
     R
     ```
 
-2.  Run **Scripts/run-simulation.R**
+3.  Run **Scripts/run-simulation.R**
 
     ```{r}
     source("Scripts/run-simulation.R")
     ```
 
-3.  Follow some instructions that appear in your terminal
+4.  Follow some instructions that appear in your terminal
 
 ## Download GFS Data
 
