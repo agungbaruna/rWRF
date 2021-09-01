@@ -2,7 +2,7 @@
 #' Make sure You have installed WRF model & WRF Pre-Processing (WPS)
 #' In this script, I have installed WRF model in ~/WRF directory
 #' I have installed WRF-ARW with GFS input data
-#' I can't provide for all WRF simulation, such as WRF-Chem, WRF-Fire, and WRF-Hydro in this script
+#' I can't provide for all WRF simulation, like WRF-Chem, WRF-Fire, and WRF-Hydro in this script
 #' 
 
 # Export library
