@@ -16,15 +16,13 @@ If You have downloaded the data (e.g. GFS, ERA5, etc), follow these steps
     R
     ```
 
-2.  You should edit `rWRF_dir` at **Scripts/run-simulation.R** script according to rWRF directory. In my script, I put `rWRF_dir` at **/mnt/f/rWRF**
-
-3.  Run **Scripts/run-simulation.R**
+2.  Run **Scripts/run-simulation.R**
 
     ```{r}
     source("Scripts/run-simulation.R")
     ```
 
-4.  Follow some instructions that appear in your terminal
+3.  Follow some instructions that appear in your terminal
 
 ## Download GFS Data
 
