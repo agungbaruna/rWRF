@@ -10,7 +10,7 @@ library(glue)
 library(crayon)
 
 # rWRF Directory
-rWRF_dir  <- "/mnt/f/rWRF"
+rWRF_dir  <- getwd()
 
 # Make working directory
 work_dir <- glue("{rWRF_dir}/WRF-sim")
